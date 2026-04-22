@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Frazon AntiVurus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 10% 20%, #0a0f1c, #03060c);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .av-card {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border-radius: 56px;
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+            padding: 32px 28px 40px;
+            transition: 0.2s;
+        }
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #94a3f8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        .nav-link:hover {
+            color: #60a5fa;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #94a3f8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .drop-zone {
+            background: rgba(255,255,255,0.02);
+            border: 2px dashed #2d3a5e;
+            border-radius: 40px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 28px;
+        }
+        .drop-zone:hover, .drag-over {
+            border-color: #3b82f6;
+            background: rgba(59,130,246,0.05);
+        }
+        .drop-zone i {
+            font-size: 48px;
+            color: #3b82f6;
+            margin-bottom: 12px;
+        }
+        .drop-zone p {
+            color: #cbd5e1;
+            margin: 8px 0;
+        }
+        .file-info {
+            background: #0f172a;
+            border-radius: 28px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .file-name {
+            font-weight: 500;
+            word-break: break-all;
+            color: #e2e8f0;
+        }
+        .file-size {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        .progress-area {
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #1e293b;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #a855f7);
+            border-radius: 10px;
+            transition: width 0.15s linear;
+        }
+        .status-text {
+            font-size: 0.85rem;
+            margin-top: 8px;
+            color: #94a3b8;
+        }
+        .result {
+            background: rgba(0,0,0,0.4);
+            border-radius: 32px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .safe {
+            color: #4ade80;
+            border-left: 4px solid #4ade80;
+            background: rgba(74,222,128,0.1);
+        }
+        .danger {
+            color: #f87171;
+            border-left: 4px solid #f87171;
+            background: rgba(248,113,113,0.1);
+        }
+        .btn-reset {
+            background: #1e293b;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.2s;
+        }
+        .btn-reset:hover {
+            background: #2d3a5e;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="av-card">
+    <div class="navbar">
+        <div class="logo">Frazon AntiVurus</div>
+        <div class="nav-links">
+            <a href="https://t.me/zheroxConfing" class="nav-link" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-telegram"></i> Создатели
+            </a>
+        </div>
+    </div>
+
+    <div id="dropZone" class="drop-zone">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Перетащите файл или <strong>нажмите для выбора</strong></p>
+        <input type="file" id="fileInput" style="display:none">
+    </div>
+
+    <div id="fileInfo" class="file-info hide">
+        <span class="file-name" id="fileName"></span>
+        <span class="file-size" id="fileSize"></span>
+    </div>
+
+    <div id="progressArea" class="progress-area hide">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="status-text" id="scanStatus">Инициализация сканера...</div>
+    </div>
+
+    <div id="resultArea" class="result hide"></div>
+
+    <button id="resetBtn" class="btn-reset hide"><i class="fas fa-arrow-left"></i> Другой файл</button>
+</div>
+
+<script>
+    (function() {
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfoDiv = document.getElementById('fileInfo');
+        const fileNameSpan = document.getElementById('fileName');
+        const fileSizeSpan = document.getElementById('fileSize');
+        const progressArea = document.getElementById('progressArea');
+        const progressFill = document.getElementById('progressFill');
+        const scanStatusSpan = document.getElementById('scanStatus');
+        const resultArea = document.getElementById('resultArea');
+        const resetBtn = document.getElementById('resetBtn');
+
+        let scanning = false;
+
+        function simulateScan(file) {
+            return new Promise((resolve) => {
+                scanning = true;
+                progressFill.style.width = '0%';
+                let progress = 0;
+                const interval = setInterval(() => {
+                    if (!scanning) {
+                        clearInterval(interval);
+                        return;
+                    }
+                    progress += Math.random() * 15 + 5;
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                        progressFill.style.width = '100%';
+                        scanStatusSpan.innerText = '✅ Анализ завершён';
+                        setTimeout(() => {
+                            const isMalicious = heuristicCheck(file);
+                            resolve(isMalicious);
+                        }, 300);
+                    } else {
+                        progressFill.style.width = progress + '%';
+                        if (progress < 30) scanStatusSpan.innerText = '🔍 Распаковка сигнатур...';
+                        else if (progress < 70) scanStatusSpan.innerText = '🧬 Эвристический анализ...';
+                        else scanStatusSpan.innerText = '🛡️ Проверка базы...';
+                    }
+                }, 90);
+            });
+        }
+
+        function heuristicCheck(file) {
+            const name = file.name.toLowerCase();
+            const extensions = ['.exe', '.scr', '.bat', '.cmd', '.vbs', '.ps1', '.jar', '.apk', '.dll', '.sys'];
+            const dangerousKeywords = ['virus', 'crack', 'keygen', 'hack', 'injector', 'stealer', 'ransom', 'trojan', 'malware'];
+            let riskScore = 0;
+            for (let ext of extensions) {
+                if (name.endsWith(ext)) {
+                    riskScore += 25;
+                    break;
+                }
+            }
+            for (let kw of dangerousKeywords) {
+                if (name.includes(kw)) {
+                    riskScore += 35;
+                    break;
+                }
+            }
+            if (file.size > 10 * 1024 * 1024 && name.endsWith('.exe')) riskScore += 15;
+            if (name.includes('update') || name.includes('setup')) riskScore -= 10;
+            riskScore = Math.min(100, Math.max(0, riskScore));
+            const randomFactor = Math.random() * 15 - 5;
+            let finalScore = riskScore + randomFactor;
+            finalScore = Math.min(95, Math.max(5, finalScore));
+            return finalScore > 55;
+        }
+
+        function displayResult(isMalicious, fileName) {
+            resultArea.classList.remove('hide', 'safe', 'danger');
+            if (isMalicious) {
+                resultArea.classList.add('danger');
+                resultArea.innerHTML = `
+                    <i class="fas fa-skull-crosswalk" style="font-size:32px; margin-bottom:8px; display:block"></i>
+                    <strong>УГРОЗА ОБНАРУЖЕНА!</strong><br>
+                    Файл "${fileName}" содержит вредоносный код.
+                `;
+            } else {
+                resultArea.classList.add('safe');
+                resultArea.innerHTML = `
+                    <i class="fas fa-check-circle" style="font-size:32px; margin-bottom:8px; display:block; color:#4ade80"></i>
+                    <strong>Файл безопасен</strong><br>
+                    Файл "${fileName}" не содержит известных угроз.
+                `;
+            }
+            resultArea.classList.remove('hide');
+        }
+
+        function resetUI() {
+            scanning = false;
+            fileInfoDiv.classList.add('hide');
+            progressArea.classList.add('hide');
+            resultArea.classList.add('hide');
+            resetBtn.classList.add('hide');
+            dropZone.classList.remove('hide');
+            fileInput.value = '';
+            progressFill.style.width = '0%';
+            scanStatusSpan.innerText = 'Инициализация сканера...';
+        }
+
+        function startScan(file) {
+            if (!file) return;
+            dropZone.classList.add('hide');
+            fileInfoDiv.classList.remove('hide');
+            fileNameSpan.innerText = file.name;
+            let sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            fileSizeSpan.innerText = `${sizeMB} MB`;
+            progressArea.classList.remove('hide');
+            resultArea.classList.add('hide');
+            resetBtn.classList.remove('hide');
+            scanning = true;
+
+            simulateScan(file).then(isMalicious => {
+                if (scanning === true) {
+                    displayResult(isMalicious, file.name);
+                    scanning = false;
+                }
+            }).catch(() => {
+                scanStatusSpan.innerText = 'Ошибка сканирования';
+                scanning = false;
+            });
+        }
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.size > 200 * 1024 * 1024) {
+                    alert('Файл слишком большой (макс. 200 МБ)');
+                    return;
+                }
+                startScan(file);
+            }
+        });
+
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                if (file.size > 200 * 1024 * 1024) {
+                    alert('Файл слишком большой (макс. 200 МБ)');
+                    return;
+                }
+                startScan(file);
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            resetUI();
+        });
+    })();
+</script>
+</body>
+</html>
